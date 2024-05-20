@@ -268,7 +268,6 @@ class ControlClusterClient(ABC):
         else:
             # ini case user wants to set core ids manually
             core_ids = self.core_ids_override_list
-
         for i in range(0, self.cluster_size):
             info = f"Spawning process for controller n.{i}."
             Journal.log(self.__class__.__name__,

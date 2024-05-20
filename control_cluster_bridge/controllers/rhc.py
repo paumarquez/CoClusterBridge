@@ -41,7 +41,7 @@ from perf_sleep.pyperfsleep import PerfSleep
 class RHController(ABC):
 
     def __init__(self, 
-            srdf_path: str,
+            # srdf_path: str,
             n_nodes: int,
             dt: float,
             namespace: str, # shared mem namespace
@@ -62,7 +62,7 @@ class RHController(ABC):
         self.controller_index = None # will be assigned upon registration to a cluster
         self.controller_index_np = None 
 
-        self.srdf_path = srdf_path # using for parsing robot homing
+        # self.srdf_path = srdf_path # using for parsing robot homing
 
         self._registered = False
         self._closed = False 
@@ -74,7 +74,7 @@ class RHController(ABC):
         self._profiling_data_dict["phases_shift_dt"] = np.nan
         self._profiling_data_dict["task_ref_update"] = np.nan
         
-        self.n_dofs = None
+        self.n_dofs = self._get_ndofs() 
         self.n_contacts = None
         
         # shared mem
@@ -294,13 +294,13 @@ class RHController(ABC):
 
     def set_cmds_to_homing(self):
 
-        homing = self._homer.get_homing().reshape(1, 
-                            self.robot_cmds.n_jnts())
+        # homing = self._homer.get_homing().reshape(1, 
+                            # self.robot_cmds.n_jnts())
         
         null_action = np.zeros((1, self.robot_cmds.n_jnts()), 
                         dtype=self._dtype)
         
-        self.robot_cmds.jnts_state.set(data=homing, data_type="q", robot_idxs=self.controller_index_np)
+        self.robot_cmds.jnts_state.set(data=self._homer, data_type="q", robot_idxs=self.controller_index_np)
         self.robot_cmds.jnts_state.set(data=null_action, data_type="v", robot_idxs=self.controller_index_np)
         self.robot_cmds.jnts_state.set(data=null_action, data_type="eff", robot_idxs=self.controller_index_np)
 
@@ -533,8 +533,9 @@ class RHController(ABC):
                                                     col_index=0)
 
     def _init_robot_homer(self):
-        self._homer = RobotHomer(srdf_path=self.srdf_path, 
-                            jnt_names_prb=self._controller_side_jnt_names)
+        # self._homer = RobotHomer(srdf_path=self.srdf_path, 
+                            # jnt_names_prb=self._controller_side_jnt_names)
+        self._homer = np.zeros((1, self._get_ndofs()), dtype=self._dtype)
         
     def _update_profiling_data(self):
 
