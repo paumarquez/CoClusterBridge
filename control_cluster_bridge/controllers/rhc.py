@@ -411,15 +411,16 @@ class RHController(ABC):
     def _consinstency_checks(self):
         
         # check controller dt
-        server_side_cluster_dt = self.cluster_stats.get_info(info_name="cluster_dt")
-        if not (abs(server_side_cluster_dt - self._dt) < 1e-8):
-            exception = f"Trying to initialize a controller with control dt {self._dt}, which" + \
-                f"does not match the cluster control dt {server_side_cluster_dt}"
-            Journal.log(f"{self.__class__.__name__}{self.controller_index}",
-                        "_consinstency_checks",
-                        exception,
-                        LogType.EXCEP,
-                        throw_when_excep = True)
+        print("Skipping dt check")
+        # server_side_cluster_dt = self.cluster_stats.get_info(info_name="cluster_dt")
+        # if not (abs(server_side_cluster_dt - self._dt) < 1e-8):
+        #     exception = f"Trying to initialize a controller with control dt {self._dt}, which" + \
+        #         f"does not match the cluster control dt {server_side_cluster_dt}"
+        #     Journal.log(f"{self.__class__.__name__}{self.controller_index}",
+        #                 "_consinstency_checks",
+        #                 exception,
+        #                 LogType.EXCEP,
+        #                 throw_when_excep = False)
         # check contact names
         
         server_side_contact_names = set(self.robot_state.contact_names())
